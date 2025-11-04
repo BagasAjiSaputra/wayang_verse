@@ -1,65 +1,161 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-[#fffbf5] text-[#1E1E1E] flex flex-col">
+
+      {/* Hero Section */}
+      <section className="flex flex-col-reverse md:flex-row items-center justify-between px-8 md:px-16 py-12 md:py-24 mt-[3rem] relative overflow-hidden">
+        {/* Background Circle */}
+        <div className="absolute right-[-150px] md:right-[0px] top-20 w-[500px] h-[500px] md:w-[600px] md:h-[600px] bg-[#F5E4C3] rounded-full -z-10" />
+
+        {/* Left Text Section */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7 }}
+          className="max-w-xl space-y-6"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-[#1E1E1E]">
+            Cerita <span className="text-[#A46B00]">Wayang</span> Nusantara
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-gray-700 leading-relaxed">
+            Wayang adalah bentuk teater boneka tradisional yang berasal dari pulau Jawa di Indonesia.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <div className="flex gap-4 pt-4">
+            <Link href="#edukasi">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-white font-medium"
+              >
+                <div className="inline-flex h-12 translate-y-0 items-center justify-center px-6 text-[#1E1E1E] transition duration-500 group-hover:-translate-y-[150%]">
+                  Telusuri
+                </div>
+                <div className="absolute inline-flex h-12 w-full translate-y-[100%] items-center justify-center text-white transition duration-500 group-hover:translate-y-0">
+                  <span className="absolute h-full w-full translate-y-full skew-y-12 scale-y-0 bg-[#1E1E1E] transition duration-500 group-hover:translate-y-0 group-hover:scale-150"></span>
+                  <span className="z-10">Telusuri</span>
+                </div>
+              </motion.button>
+            </Link>
+
+            <Link href="#demo">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-[#1E1E1E] font-medium"
+              >
+                <div className="inline-flex h-12 translate-y-0 items-center justify-center px-6 text-white transition duration-500 group-hover:-translate-y-[150%]">
+                  Lihat Demo
+                </div>
+                <div className="absolute inline-flex h-12 w-full translate-y-[100%] items-center justify-center text-[#1E1E1E] transition duration-500 group-hover:translate-y-0">
+                  <span className="absolute h-full w-full translate-y-full skew-y-12 scale-y-0 bg-white transition duration-500 group-hover:translate-y-0 group-hover:scale-150"></span>
+                  <span className="z-10">Lihat Demo</span>
+                </div>
+              </motion.button>
+            </Link>
+          </div>
+
+          <motion.div
+            whileHover={{ y: 4 }}
+            className="pt-8 flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-black"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <span>↓</span> Gulir ke bawah
+          </motion.div>
+        </motion.div>
+
+        {/* Right Image Section */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative"
+        >
+          <Image
+            src="/images/bg.png"
+            alt="Ilustrasi Wayang"
+            width={500}
+            height={500}
+            priority
+          />
+        </motion.div>
+      </section>
+
+      {/* Section Lanjutan: Edukasi Wayang */}
+      <section
+        id="edukasi"
+        className="px-8 md:px-16 py-20 bg-[#FFF8ED] border-t border-[#F0E2C2]"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-3xl mx-auto mb-14"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1E1E1E] mb-4">
+            Mengenal Wayang Lebih Dekat
+          </h2>
+          <p className="text-gray-700 leading-relaxed text-lg">
+            Wayang bukan hanya seni pertunjukan, tapi juga cermin kehidupan.
+            Setiap tokoh, setiap bayangan, menyimpan pesan moral yang masih relevan hingga kini.
+          </p>
+        </motion.div>
+
+        {/* Card Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {[
+            {
+              title: "Sejarah Wayang",
+              desc: "Berawal dari ritual kuno hingga menjadi simbol budaya yang menyatukan spiritualitas dan seni.",
+              img: "/images/wayang/abimanyu.jpg",
+            },
+            {
+              title: "Filosofi Kehidupan",
+              desc: "Wayang mengajarkan keseimbangan antara kebaikan dan kejahatan, antara dunia fana dan abadi.",
+              img: "/images/wayang/arjuna.jpg",
+            },
+            {
+              title: "Karakter dan Cerita",
+              desc: "Setiap tokoh memiliki peran dan pesan — dari Arjuna yang bijak hingga Bagong yang jenaka.",
+              img: "/images/wayang/bagong.jpg",
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.05)] overflow-hidden border border-[#f0e0c8] flex flex-col"
+            >
+              {/* <Image
+                src={item.img}
+                alt={item.title}
+                width={400}
+                height={250}
+                className="object-cover w-full h-[230px]"
+              /> */}
+              <div className="p-6 flex flex-col flex-1 justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-amber-800 mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+                <Link
+                  href="/sejarah"
+                  className="text-sm text-[#A46B00] font-medium mt-4 hover:underline"
+                >
+                  Baca selengkapnya →
+                </Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
