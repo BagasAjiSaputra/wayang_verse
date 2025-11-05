@@ -108,7 +108,7 @@ export default function SejarahPage() {
         ))}
       </motion.div>
 
-      {/* Story Display */}
+      {/* Story */}
       <AnimatePresence mode="wait">
         {selected && (
           <motion.div
@@ -145,10 +145,10 @@ export default function SejarahPage() {
         )}
       </AnimatePresence>
 
-      {/* Audio player */}
+      {/* Audio Player */}
       <audio ref={audioRef} src={selected.voice} onEnded={() => setIsPlaying(false)} />
 
-      {/* Audio Button */}
+      {/* Play Button */}
       <div className="text-center mt-16">
         <motion.button
           onClick={handlePlay}
