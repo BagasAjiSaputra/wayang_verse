@@ -10,10 +10,8 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="flex flex-col-reverse md:flex-row items-center justify-between px-8 md:px-16 py-12 md:py-24 mt-[3rem] relative overflow-hidden">
-        {/* Background Circle */}
         <div className="absolute right-[-150px] md:right-[0px] top-20 w-[500px] h-[500px] md:w-[600px] md:h-[600px] bg-[#F5E4C3] rounded-full -z-10" />
 
-        {/* Left Text Section */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -67,7 +65,7 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* Right Image Section */}
+        {/* Hero Bg */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -84,7 +82,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Section Lanjutan: Edukasi Wayang */}
+      {/* Section Edukasi Wayang */}
       <section
         id="edukasi"
         className="px-8 md:px-16 py-20 bg-[#FFF8ED] border-t border-[#F0E2C2]"
@@ -104,7 +102,7 @@ export default function HomePage() {
           </p>
         </motion.div>
 
-        {/* Card Grid */}
+        {/* Card */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {[
             {

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google"; // ✅ pakai Outfit font
+import { Outfit } from "next/font/google"; 
 import "./globals.css";
 import Navbar from "./components/Navbar";
 
-// ✅ Inisialisasi font Outfit
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"], // kamu bisa ubah sesuai kebutuhan
+  weight: ["300", "400", "500", "600", "700"], 
 });
 
 export const metadata: Metadata = {
