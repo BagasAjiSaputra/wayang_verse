@@ -15,6 +15,7 @@ export default function Navbar() {
     { name: "Beranda", href: "/" },
     { name: "Sejarah", href: "/sejarah" },
     { name: "AI", href: "/ai" },
+    { name: "3D", href: "/ar" },
   ];
 
   return (
