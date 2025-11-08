@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaRobot, FaPlay, FaTrash } from "react-icons/fa";
 
@@ -13,18 +13,34 @@ export default function AIPlaygroundPage() {
   const [result, setResult] = useState<string | null>(null);
   const [history, setHistory] = useState<{ id: string; mode: Mode; prompt: string; output: string }[]>([]);
   const [voiceLang, setVoiceLang] = useState("id-ID");
-  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Pastikan suara sudah siap
+  useEffect(() => {
+    window.speechSynthesis.onvoiceschanged = () => {};
+  }, []);
 
   async function callAI(prompt: string, mode: Mode) {
-    const res = await fetch("/api/ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, mode }),
-    });
-    if (!res.ok) throw new Error("Terjadi kesalahan API " + res.status);
-    const data = await res.json();
-    return data.text as string;
+    try {
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, mode }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        console.error("API Error:", err);
+        throw new Error(`Terjadi kesalahan API (${res.status})`);
+      }
+
+      const data = await res.json();
+      return data.text as string;
+    } catch (e) {
+      console.error("callAI failed:", e);
+      throw e;
+    }
   }
 
   const handleGenerate = async () => {
@@ -36,8 +52,7 @@ export default function AIPlaygroundPage() {
       setResult(out);
       setHistory((h) => [{ id: Date.now().toString(), mode, prompt: input, output: out }, ...h]);
     } catch (err) {
-      console.error(err);
-      setResult("Gagal menghasilkan konten. Masih dalam pengembangan.");
+      setResult("⚠️ Gagal menghasilkan konten. Coba periksa koneksi API Hugging Face kamu.");
     } finally {
       setLoading(false);
     }
@@ -64,11 +79,15 @@ export default function AIPlaygroundPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#fffaf5] to-[#f8f3ea] text-[#1E1E1E] px-4 md:px-10 py-10 font-[Outfit] overflow-x-hidden">
       <section className="max-w-4xl mx-auto text-center mb-10 mt-12">
-        <motion.h1 initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold">
+        <motion.h1
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl md:text-4xl font-bold"
+        >
           WayangVerse — AI Playground
         </motion.h1>
         <p className="text-gray-700 mt-3 text-sm md:text-base leading-relaxed">
-          Eksperimen ringkas: buat cerita, ringkasan, atau terjemahan cepat. Cocok buat ide konten, narasi TTS, dan prototype storytelling.
+          Eksperimen ringkas: buat cerita, ringkasan, atau terjemahan cepat untuk konten dan narasi wayang.
         </p>
       </section>
 
@@ -104,13 +123,14 @@ export default function AIPlaygroundPage() {
       </section>
 
       <section className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-[0_6px_30px_rgba(0,0,0,0.04)] overflow-hidden">
+        {/* Kiri: input dan hasil */}
+        <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-md overflow-hidden">
           <label className="text-sm text-gray-600">Prompt / Input</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Masukkan teks..."
-            className="w-full mt-3 min-h-[140px] p-4 rounded-lg border border-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-200 text-gray-800 resize-y max-h-[50vh]"
+            className="w-full mt-3 min-h-[140px] p-4 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-200 text-gray-800 resize-y max-h-[50vh]"
           />
 
           <div className="flex flex-wrap items-center gap-2 mt-4">
@@ -119,7 +139,7 @@ export default function AIPlaygroundPage() {
               disabled={loading}
               className="inline-flex items-center gap-2 bg-amber-700 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:brightness-95 disabled:opacity-60"
             >
-              <FaRobot /> {loading ? "Men-generate..." : "Generate"}
+              <FaRobot /> {loading ? "Sedang memproses..." : "Generate"}
             </button>
 
             <button
@@ -127,7 +147,7 @@ export default function AIPlaygroundPage() {
                 setInput("");
                 setResult(null);
               }}
-              className="px-4 py-2 rounded-full border border-gray-200 text-sm"
+              className="px-4 py-2 rounded-full border border-gray-200 text-sm hover:bg-gray-50"
             >
               Clear
             </button>
@@ -144,7 +164,7 @@ export default function AIPlaygroundPage() {
                 className="mt-3 bg-[#fffaf0] p-4 rounded-lg min-h-[120px] border border-amber-50 text-gray-800 overflow-y-auto max-h-[45vh]"
               >
                 {loading ? (
-                  <p className="text-sm text-gray-500">Sedang memproses...</p>
+                  <p className="text-sm text-gray-500 animate-pulse">Sedang memproses...</p>
                 ) : result ? (
                   <>
                     <p className="whitespace-pre-line break-words">{result}</p>
@@ -156,8 +176,8 @@ export default function AIPlaygroundPage() {
                         <FaPlay /> Putar TTS
                       </button>
                       <button
-                        onClick={() => navigator.clipboard.writeText(result)}
-                        className="px-3 py-2 rounded-full border text-sm"
+                        onClick={() => navigator.clipboard.writeText(result ?? "")}
+                        className="px-3 py-2 rounded-full border text-sm hover:bg-gray-50"
                       >
                         Salin
                       </button>
@@ -171,17 +191,18 @@ export default function AIPlaygroundPage() {
           </div>
         </div>
 
-        <aside className="bg-white rounded-2xl p-4 shadow-[0_6px_18px_rgba(0,0,0,0.04)] flex flex-col gap-4 overflow-hidden">
+        {/* Kanan: riwayat */}
+        <aside className="bg-white rounded-2xl p-4 shadow-md flex flex-col gap-4 overflow-hidden">
           <div className="flex items-center justify-between">
             <h4 className="font-semibold">Riwayat</h4>
-            <button onClick={clearHistory} className="text-sm text-gray-500">
+            <button onClick={clearHistory} className="text-sm text-gray-500 hover:text-red-500">
               <FaTrash />
             </button>
           </div>
 
           <div className="flex flex-col gap-3 overflow-y-auto max-h-[45vh] scrollbar-thin scrollbar-thumb-gray-300">
             {history.length === 0 ? (
-              <p className="text-sm text-gray-500">Belum ada riwayat. Simpan hasil untuk menampilkan.</p>
+              <p className="text-sm text-gray-500">Belum ada riwayat.</p>
             ) : (
               history.map((h) => (
                 <motion.div
@@ -193,9 +214,9 @@ export default function AIPlaygroundPage() {
                   <div className="flex items-center justify-between gap-2">
                     <div className="min-w-0">
                       <div className="font-medium">
-                        {h.mode === "story" ? "Cerita" : h.mode === "summarize" ? "Ringkas" : "Terjemahkan"}
+                        {h.mode === "story" ? "Cerita" : h.mode === "summarize" ? "Ringkasan" : "Terjemahan"}
                       </div>
-                      <div className="text-xs text-gray-500 truncate max-w-[150px] sm:max-w-[200px]">{h.prompt}</div>
+                      <div className="text-xs text-gray-500 truncate max-w-[180px]">{h.prompt}</div>
                     </div>
                     <div className="flex flex-col items-end shrink-0">
                       <button
@@ -203,7 +224,7 @@ export default function AIPlaygroundPage() {
                           setResult(h.output);
                           setInput(h.prompt);
                         }}
-                        className="text-xs text-amber-700"
+                        className="text-xs text-amber-700 hover:underline"
                       >
                         Muat
                       </button>
@@ -220,7 +241,7 @@ export default function AIPlaygroundPage() {
       </section>
 
       <section className="max-w-6xl mx-auto mt-10 text-center px-4">
-        <p className="text-xs md:text-sm text-gray-600 leading-relaxed">Under Testing</p>
+        <p className="text-xs md:text-sm text-gray-600 leading-relaxed">Under Testing — Hugging Face Integration</p>
       </section>
     </main>
   );
