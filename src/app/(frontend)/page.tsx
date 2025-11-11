@@ -19,7 +19,7 @@ export default function HomePage() {
           className="max-w-xl space-y-6"
         >
           <h1 className="text-4xl md:text-6xl font-bold leading-tight text-[#1E1E1E]">
-            Cerita <span className="text-[#A46B00]">Wayang</span> Nusantara
+            Cerita <span className="text-[#A46B00]">Wayang</span> nusantara
           </h1>
           <p className="text-lg text-gray-700 leading-relaxed">
             Wayang adalah bentuk teater boneka tradisional yang berasal dari pulau Jawa di Indonesia.

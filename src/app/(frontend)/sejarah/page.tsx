@@ -41,6 +41,7 @@ const wayangStories = [
     moral: "Kadang kebenaran paling dalam justru datang lewat tawa dan kejujuran yang polos.",
     voice: "/voice/abimanyu.mp3",
   },
+  
 ];
 
 

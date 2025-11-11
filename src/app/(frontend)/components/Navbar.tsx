@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { MdGraphicEq } from "react-icons/md";
-import { Sling as Hamburger } from "hamburger-react"; // 🍔 import dari hamburger-react
+import { Sling as Hamburger } from "hamburger-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,25 +14,33 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Beranda", href: "/" },
+    { name: "About", href: "/about" },
     { name: "Sejarah", href: "/sejarah" },
     { name: "AI", href: "/ai" },
     { name: "3D", href: "/ar" },
+    { name: "Upload", href: "/upload" },
   ];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-[#FFFCF7]/80 backdrop-blur-xl shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-16 py-4">
-        {/* Logo section */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#1E1E1E] text-white font-semibold">
-            <span>W</span>
+        {/* 🔥 Logo Section */}
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-md ring-2 ring-gray-900 hover:ring-amber-500 transition-all duration-300">
+            <Image
+              src="/images/wayang/logo.jpg" // 🖼️ ganti dengan path logo kamu di folder public/images
+              alt="Wayang-Verse Logo"
+              fill
+              sizes="200%"
+              className="object-cover"
+            />
           </div>
           <span className="text-base md:text-lg font-semibold tracking-wide text-gray-800">
-            WayangNusantara
+            Wayang-Verse
           </span>
-        </div>
+        </Link>
 
-        {/* Desktop Navigation */}
+        {/* 🌐 Desktop Navigation */}
         <ul className="hidden md:flex items-center gap-10 text-[15px] font-medium">
           <MdGraphicEq className="text-[#1E1E1E] text-xl opacity-70" />
           {navItems.map((item) => {
@@ -49,7 +58,7 @@ export default function Navbar() {
                   {item.name}
                 </Link>
 
-                {/* Underline animation */}
+                {/* Garis bawah animasi */}
                 {isActive && (
                   <motion.span
                     layoutId="underline"
@@ -62,7 +71,7 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* Mobile Hamburger */}
+        {/* 🍔 Mobile Hamburger */}
         <div className="md:hidden flex items-center">
           <Hamburger
             toggled={isOpen}
@@ -75,7 +84,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* 📱 Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
