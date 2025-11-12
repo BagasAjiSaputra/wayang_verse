@@ -88,7 +88,7 @@ const RekonstruksiPage = () => {
 
       {/* Catatan bawah */}
       <div className="text-center mt-20 text-sm text-[#5A544B] mb-4">
-        © {new Date().getFullYear()} WayangVerse — Rekonstruksi Digital Wayang Nusantara by Astra-Verse
+        © {new Date().getFullYear()} WayangVerse — Rekonstruksi Digital Wayang Nusantara by Wayang-Verse
       </div>
     </section>
   );

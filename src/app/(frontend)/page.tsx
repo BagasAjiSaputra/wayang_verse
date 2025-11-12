@@ -35,10 +35,10 @@ export default function HomePage() {
           transition={{ duration: 0.7 }}
           className="max-w-xl space-y-6 text-center lg:text-left"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#1E1E1E]">
-            Cerita <span className="text-[#A46B00]">Wayang</span> Nusantara
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-200">
+            Cerita <span className="text-yellow-700">Wayang</span> Nusantara
           </h1>
-          <p className="text-base sm:text-lg text-gray-900 leading-relaxed max-w-lg mx-auto lg:mx-0">
+          <p className="text-base sm:text-lg text-white leading-relaxed max-w-lg mx-auto lg:mx-0">
             Wayang adalah bentuk teater boneka tradisional yang berasal dari
             pulau Jawa di Indonesia.
           </p>
@@ -79,7 +79,7 @@ export default function HomePage() {
           {/* Petunjuk Scroll */}
           <motion.div
             whileHover={{ y: 4 }}
-            className="pt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-gray-500 cursor-pointer hover:text-black"
+            className="pt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-white cursor-pointer hover:text-black"
           >
             <span>↓</span> Gulir ke bawah
           </motion.div>

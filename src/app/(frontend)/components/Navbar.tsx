@@ -14,7 +14,7 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Beranda", href: "/" },
-    { name: "About", href: "/about" },
+    { name: "Alur", href: "/about" },
     { name: "Sejarah", href: "/sejarah" },
     { name: "AI", href: "/ai" },
     { name: "3D", href: "/ar" },

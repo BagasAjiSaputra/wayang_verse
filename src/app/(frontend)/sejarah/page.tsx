@@ -183,7 +183,7 @@ export default function SejarahPage() {
                 alt={selected.nama}
                 width={400}
                 height={400}
-                className="rounded-xl object-contain max-w-[280px] md:max-w-[350px] lg:max-w-[400px] max-h-[400px] mx-auto border border-gray-200"
+                className="rounded-xl object-contain max-w-[280px] md:max-w-[350px] lg:max-w-[400px] max-h-[400px] mx-auto"
                 onError={handleImageError}
                 priority
               />
