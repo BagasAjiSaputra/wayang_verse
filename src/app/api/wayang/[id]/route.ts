@@ -1,29 +1,26 @@
-// app/api/wayang/[id]/route.ts
 import { NextResponse } from "next/server";
-import { db } from "../../../../../lib/db/index";
-import { wayang } from "../../../../../lib/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params; // ✅ ambil params dengan await
+
   try {
-    const { id } = params;
+    // contoh fetch data dari database atau array
+    const wayang = {
+      id,
+      nama: "Semar",
+      images: "/images/semar.jpg",
+      kisah: "Semar adalah punakawan bijak dalam pewayangan.",
+    };
 
-    const data = await db
-      .select()
-      .from(wayang)
-      .where(eq(wayang.id, id))
-      .limit(1);
-
-    if (data.length === 0) {
-      return NextResponse.json({ error: "Tokoh wayang tidak ditemukan" }, { status: 404 });
+    if (!wayang) {
+      return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
     }
 
-    return NextResponse.json(data[0], { status: 200 });
+    return NextResponse.json(wayang, { status: 200 });
   } catch (error) {
-    console.error("❌ Error fetching wayang by ID:", error);
-    return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
+    return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
   }
 }
