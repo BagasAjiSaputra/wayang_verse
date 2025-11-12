@@ -19,6 +19,7 @@ export default function Navbar() {
     { name: "AI", href: "/ai" },
     { name: "3D", href: "/ar" },
     { name: "Upload", href: "/upload" },
+    { name: "AI-Rekonstruksi", href: "/rekonstruksi" },
   ];
 
   return (

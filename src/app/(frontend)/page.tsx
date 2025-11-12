@@ -6,30 +6,49 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#fffbf5] text-[#1E1E1E] flex flex-col">
+    <main className="min-h-screen bg-[#fffbf5] text-[#1E1E1E] flex flex-col relative overflow-hidden">
+      {/* 🔹 VIDEO BACKGROUND (AUTO MENYESUAIKAN DEVICE) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+          aria-label="Latar belakang video animasi Wayang"
+        >
+          <source src="/images/wayang/shortvideo.mp4" type="video/mp4" />
+          Browser Anda tidak mendukung video.
+        </video>
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
+      </div>
 
-      {/* Hero Section */}
+      {/* 🔹 HERO SECTION RESPONSIVE */}
       <section className="flex flex-col-reverse md:flex-row items-center justify-between px-8 md:px-16 py-12 md:py-24 mt-[3rem] relative overflow-hidden">
-        <div className="absolute right-[-150px] md:right-[0px] top-20 w-[500px] h-[500px] md:w-[600px] md:h-[600px] bg-[#F5E4C3] rounded-full -z-10" />
+        {/* Lingkaran dekorasi */}
+        <div className="absolute right-[-80px] lg:right-[59px] top-16 w-[200px] h-[200px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[500px] bg-[#F5E4C3] rounded-full -z-10" />
 
+        {/* TEXT SECTION */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
-          className="max-w-xl space-y-6"
+          className="max-w-xl space-y-6 text-center lg:text-left"
         >
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-[#1E1E1E]">
-            Cerita <span className="text-[#A46B00]">Wayang</span> nusantara
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-[#1E1E1E]">
+            Cerita <span className="text-[#A46B00]">Wayang</span> Nusantara
           </h1>
-          <p className="text-lg text-gray-700 leading-relaxed">
-            Wayang adalah bentuk teater boneka tradisional yang berasal dari pulau Jawa di Indonesia.
+          <p className="text-base sm:text-lg text-gray-900 leading-relaxed max-w-lg mx-auto lg:mx-0">
+            Wayang adalah bentuk teater boneka tradisional yang berasal dari
+            pulau Jawa di Indonesia.
           </p>
 
-          <div className="flex gap-4 pt-4">
+          {/* Tombol Aksi */}
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
             <Link href="#edukasi">
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-white font-medium"
+                className="group relative inline-flex h-11 sm:h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-white font-medium w-[150px] sm:w-auto"
               >
                 <div className="inline-flex h-12 translate-y-0 items-center justify-center px-6 text-[#1E1E1E] transition duration-500 group-hover:-translate-y-[150%]">
                   Telusuri
@@ -44,7 +63,7 @@ export default function HomePage() {
             <Link href="#demo">
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-[#1E1E1E] font-medium"
+                className="group relative inline-flex h-11 sm:h-12 items-center justify-center overflow-hidden rounded-full border-2 border-[#1E1E1E] bg-[#1E1E1E] font-medium w-[150px] sm:w-auto"
               >
                 <div className="inline-flex h-12 translate-y-0 items-center justify-center px-6 text-white transition duration-500 group-hover:-translate-y-[150%]">
                   Lihat Demo
@@ -57,35 +76,37 @@ export default function HomePage() {
             </Link>
           </div>
 
+          {/* Petunjuk Scroll */}
           <motion.div
             whileHover={{ y: 4 }}
-            className="pt-8 flex items-center gap-2 text-sm text-gray-500 cursor-pointer hover:text-black"
+            className="pt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-gray-500 cursor-pointer hover:text-black"
           >
             <span>↓</span> Gulir ke bawah
           </motion.div>
         </motion.div>
 
-        {/* Hero Bg */}
+        {/* IMAGE HERO */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative"
+          className="relative mb-10 lg:mb-0"
         >
           <Image
             src="/images/bg.png"
             alt="Ilustrasi Wayang"
-            width={500}
-            height={500}
+            width={400}
+            height={400}
+            className="w-[220px] sm:w-[300px] md:w-[380px] lg:w-[450px] h-auto"
             priority
           />
         </motion.div>
       </section>
 
-      {/* Section Edukasi Wayang */}
+      {/* 🔹 SECTION EDUKASI (TIDAK DIUBAH) */}
       <section
         id="edukasi"
-        className="px-8 md:px-16 py-20 bg-[#FFF8ED] border-t border-[#F0E2C2]"
+        className="px-8 md:px-16 py-20 bg-[#FFF8ED] border-t border-[#F0E2C2] relative z-10"
       >
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -98,11 +119,11 @@ export default function HomePage() {
           </h2>
           <p className="text-gray-700 leading-relaxed text-lg">
             Wayang bukan hanya seni pertunjukan, tapi juga cermin kehidupan.
-            Setiap tokoh, setiap bayangan, menyimpan pesan moral yang masih relevan hingga kini.
+            Setiap tokoh, setiap bayangan, menyimpan pesan moral yang masih
+            relevan hingga kini.
           </p>
         </motion.div>
 
-        {/* Card */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {[
             {
@@ -127,13 +148,6 @@ export default function HomePage() {
               transition={{ duration: 0.3 }}
               className="bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.05)] overflow-hidden border border-[#f0e0c8] flex flex-col"
             >
-              {/* <Image
-                src={item.img}
-                alt={item.title}
-                width={400}
-                height={250}
-                className="object-cover w-full h-[230px]"
-              /> */}
               <div className="p-6 flex flex-col flex-1 justify-between">
                 <div>
                   <h3 className="text-xl font-semibold text-amber-800 mb-2">

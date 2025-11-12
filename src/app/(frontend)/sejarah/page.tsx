@@ -1,54 +1,84 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-const wayangStories = [
-  {
-    id: "awal",
-    title: "Anoman — Sang Ksatria Putih",
-    year: "Anoman",
-    img: "/images/wayang/anoman.jpg",
-    desc: "Anoman, si kera putih yang lahir dari kekuatan angin dan jiwa kesetiaan. Dengan keberanian yang tak tertandingi, ia menjadi simbol keteguhan hati dalam membela kebenaran. Tak pernah mengeluh, tak pernah mundur — bahkan saat melawan raksasa terbesar, semangatnya tetap menyala demi dharma dan sahabatnya, Rama.",
-    moral: "Kesetiaan dan keberanian sejati tidak mengenal bentuk, warna, atau asal-usul.",
-    voice: "/voice/abimanyu.mp3",
-  },
-  {
-    id: "kulit",
-    title: "Abimanyu — Ksatria Muda Pandawa",
-    year: "Abimanyu",
-    img: "/images/wayang/abimanyu.jpg",
-    desc: "Abimanyu, putra Arjuna, dikenal sebagai ksatria muda yang berani menembus formasi maut Cakra Wyuh. Meskipun tahu jalan masuknya tanpa tahu jalan keluar, ia tetap maju demi kehormatan Pandawa dan kebenaran yang diyakininya. Keberaniannya jadi simbol perjuangan tanpa pamrih — melangkah bukan karena pasti menang, tapi karena yakin pada kebenaran.",
-    moral: "Kebenaran butuh keberanian, bahkan jika itu berarti melawan nasib sendiri.",
-    voice: "/voice/abimanyu.mp3",
-  },
-  {
-    id: "golek",
-    title: "Arjuna — Sang Pemanah Cinta dan Dharma",
-    year: "Arjuna",
-    img: "/images/wayang/arjuna.jpg",
-    desc: "Arjuna adalah simbol kesempurnaan ksatria — gagah dalam peperangan, tenang dalam kebijaksanaan, dan lembut dalam cinta. Ia belajar bahwa kekuatan sejati bukan berasal dari senjata, tapi dari kendali atas diri sendiri. Dalam setiap panah yang dilepaskan, Arjuna tak hanya menaklukkan musuh, tapi juga egonya sendiri.",
-    moral: "Kekuatan terbesar adalah menguasai diri, bukan mengalahkan orang lain.",
-    voice: "/voice/abimanyu.mp3",
-  },
-  {
-    id: "modern",
-    title: "Bagong — Cermin Suara Rakyat",
-    year: "Bagong",
-    img: "/images/wayang/bagong.jpg",
-    desc: "Bagong adalah sosok jenaka yang selalu membawa tawa di tengah kisah penuh konflik. Tapi di balik candanya, tersimpan kritik tajam terhadap keserakahan dan kebodohan manusia. Ia berbicara jujur saat yang lain bungkam, menertawakan kebohongan agar kebenaran tak terlupakan.",
-    moral: "Kadang kebenaran paling dalam justru datang lewat tawa dan kejujuran yang polos.",
-    voice: "/voice/abimanyu.mp3",
-  },
-  
-];
+// Fungsi untuk mendapatkan nilai moral berdasarkan nama
+const getMoralValue = (nama: string): string => {
+  const morals: Record<string, string> = {
+    "Anoman": "Kesetiaan dan keberanian sejati tidak mengenal bentuk, warna, atau asal-usul.",
+    "Abimanyu": "Kebenaran butuh keberanian, bahkan jika itu berarti melawan nasib sendiri.",
+    "Arjuna": "Kekuatan terbesar adalah menguasai diri, bukan mengalahkan orang lain.",
+    "Bagong": "Kadang kebenaran paling dalam justru datang lewat tawa dan kejujuran yang polos.",
+  };
+  return morals[nama] || "Nilai moral tokoh ini sedang diperbarui.";
+};
 
+// Tipe data dari API
+type Wayang = {
+  id: string;
+  nama: string;
+  images: string;
+  kisah: string;
+};
+
+// Helper: validasi URL
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    const url = new URL(urlString.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
 
 export default function SejarahPage() {
-  const [selected, setSelected] = useState(wayangStories[0]);
+  const [wayangList, setWayangList] = useState<Wayang[]>([]);
+  const [selected, setSelected] = useState<Wayang | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Ambil data dari API saat komponen mount
+  useEffect(() => {
+    const fetchWayang = async () => {
+      try {
+        const res = await fetch("/api/wayang");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+
+        // Validasi struktur data
+        if (!Array.isArray(data)) {
+          throw new Error("Data tidak dalam format array");
+        }
+
+        const validatedData = data
+          .filter((item): item is Wayang => 
+            typeof item === 'object' &&
+            item &&
+            typeof item.id === 'string' &&
+            typeof item.nama === 'string' &&
+            typeof item.images === 'string' &&
+            typeof item.kisah === 'string'
+          );
+
+        setWayangList(validatedData);
+        if (validatedData.length > 0) {
+          setSelected(validatedData[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching wayang:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWayang();
+  }, []);
 
   const handlePlay = () => {
     if (!audioRef.current) return;
@@ -60,6 +90,32 @@ export default function SejarahPage() {
       setIsPlaying(true);
     }
   };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#fffaf5] to-[#f3e8d9]">
+        <p className="text-xl text-gray-700">Memuat cerita wayang...</p>
+      </main>
+    );
+  }
+
+  if (wayangList.length === 0) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#fffaf5] to-[#f3e8d9]">
+        <p className="text-xl text-gray-700">Belum ada tokoh wayang tersedia.</p>
+      </main>
+    );
+  }
+
+  // Ambil URL gambar yang sudah dibersihkan dan divalidasi
+  const cleanImageUrl = selected?.images.trim() || "";
+  const displayImageUrl = isValidUrl(cleanImageUrl) && !imageError
+    ? cleanImageUrl
+    : "https://via.placeholder.com/400x400?text=Gambar+Tidak+Tersedia";
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#fffaf5] to-[#f3e8d9] text-[#1E1E1E] px-6 md:px-16 py-24 font-[Outfit]">
@@ -86,11 +142,12 @@ export default function SejarahPage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        {wayangStories.map((story) => (
+        {wayangList.map((wayang) => (
           <motion.button
-            key={story.id}
+            key={wayang.id}
             onClick={() => {
-              setSelected(story);
+              setSelected(wayang);
+              setImageError(false); // reset error saat ganti tokoh
               if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
@@ -99,12 +156,12 @@ export default function SejarahPage() {
             }}
             whileHover={{ scale: 1.05 }}
             className={`px-5 py-3 rounded-full transition-all duration-300 text-sm font-medium ${
-              selected.id === story.id
+              selected?.id === wayang.id
                 ? "bg-amber-700 text-white shadow-md"
                 : "bg-white text-gray-800 hover:bg-amber-100"
             }`}
           >
-            {story.year}
+            {wayang.nama}
           </motion.button>
         ))}
       </motion.div>
@@ -122,23 +179,24 @@ export default function SejarahPage() {
           >
             <div className="flex justify-center md:justify-start w-full md:w-[45%]">
               <Image
-                src={selected.img}
-                alt={selected.title}
+                src={displayImageUrl}
+                alt={selected.nama}
                 width={400}
                 height={400}
-                className="rounded-xl object-contain max-w-[280px] md:max-w-[350px] lg:max-w-[400px] max-h-[400px] mx-auto"
+                className="rounded-xl object-contain max-w-[280px] md:max-w-[350px] lg:max-w-[400px] max-h-[400px] mx-auto border border-gray-200"
+                onError={handleImageError}
                 priority
               />
             </div>
 
             <div className="text-center md:text-left space-y-4">
               <h2 className="text-3xl font-semibold text-amber-800">
-                {selected.title}
+                {selected.nama}
               </h2>
-              <p className="text-gray-700 leading-relaxed">{selected.desc}</p>
+              <p className="text-gray-700 leading-relaxed">{selected.kisah}</p>
               <div className="pt-3 border-t border-amber-100">
                 <p className="italic text-gray-600 text-sm">
-                  💬 Nilai Moral: {selected.moral}
+                  💬 Nilai Moral: {getMoralValue(selected.nama)}
                 </p>
               </div>
             </div>
@@ -147,7 +205,13 @@ export default function SejarahPage() {
       </AnimatePresence>
 
       {/* Audio Player */}
-      <audio ref={audioRef} src={selected.voice} onEnded={() => setIsPlaying(false)} />
+      {selected && (
+        <audio
+          ref={audioRef}
+          src="/voice/abimanyu.mp3"
+          onEnded={() => setIsPlaying(false)}
+        />
+      )}
 
       {/* Play Button */}
       <div className="text-center mt-16">
@@ -161,9 +225,7 @@ export default function SejarahPage() {
           </div>
           <div className="absolute inline-flex h-20 w-full translate-y-[100%] items-center justify-center text-white transition duration-500 group-hover:translate-y-0">
             <span className="absolute h-full w-full translate-y-full skew-y-12 scale-y-0 bg-amber-700 transition duration-500 group-hover:translate-y-0 group-hover:scale-150"></span>
-            <span className="z-10">
-              {isPlaying ? "Berhenti" : "Lanjut"}
-            </span>
+            <span className="z-10">{isPlaying ? "Berhenti" : "Lanjut"}</span>
           </div>
         </motion.button>
       </div>
