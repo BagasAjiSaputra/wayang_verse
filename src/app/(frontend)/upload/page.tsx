@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { Upload, File, X, Loader2, RotateCw } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Upload, File, X, Loader2, RotateCw, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
-// import QRCode tanpa SSR (supaya aman di Next.js)
 const QRCode = dynamic(() => import("react-qr-code"), { ssr: false });
 
 const UploadPage: React.FC = () => {
@@ -14,9 +13,14 @@ const UploadPage: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [flipped, setFlipped] = useState(false); // 🔄 flip state
+  const [flipped, setFlipped] = useState(false);
+  const [showAlert, setShowAlert] = useState(true); // 🟡 Tambahkan state modal pemberitahuan
 
-  // 🟢 saat user memilih file manual
+  // 🟢 alert muncul hanya sekali saat halaman dibuka
+  useEffect(() => {
+    setShowAlert(true);
+  }, []);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] ?? null;
     setFile(selected);
@@ -27,7 +31,6 @@ const UploadPage: React.FC = () => {
     }
   };
 
-  // 🟢 saat user drag-drop file
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -43,7 +46,6 @@ const UploadPage: React.FC = () => {
     }
   };
 
-  // 🟢 saat user drag area upload
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -72,6 +74,47 @@ const UploadPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br bg-[#FFF8ED] p-4 relative overflow-hidden pt-6">
+      {/* 🟡 MODAL PEMBERITAHUAN */}
+      <AnimatePresence>
+        {showAlert && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+            <motion.div
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-6 w-[90%] sm:w-[400px] z-50 text-center"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 120, damping: 15 }}
+            >
+              <div className="flex flex-col items-center">
+                <Info className="text-[#A46B00] w-10 h-10 mb-3" />
+                <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                  Selamat Datang 👋
+                </h2>
+                <p className="text-gray-600 text-sm mb-5">
+
+                  Disini Anda dapat mengunggah foto wayang untuk diproses dan
+                  melihat kode QR unik dari file yang diunggah. <b>Pastikan file Foto yang diupload adalah foto  wayang </b>
+                  dengan
+                  berformat <b>.jpg</b> atau <b>.png</b>.
+                </p>
+                <button
+                  onClick={() => setShowAlert(false)}
+                  className="px-5 py-2 bg-[#A46B00] text-white rounded-lg hover:bg-[#8C5E00] transition"
+                >
+                  Mengerti
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* KOTAK UPLOAD */}
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md transition-all duration-500 hover:scale-[1.02] z-10 flex flex-col justify-center">
         <h1 className="text-2xl font-bold text-center mb-6 text-gray-700">
@@ -138,11 +181,10 @@ const UploadPage: React.FC = () => {
         </button>
       </div>
 
-      {/* MODAL PREVIEW GAMBAR + QR CODE (FLIP) */}
+      {/* MODAL PREVIEW GAMBAR + QR CODE */}
       <AnimatePresence>
         {showPreview && preview && (
           <>
-            {/* Background blur */}
             <motion.div
               className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20"
               initial={{ opacity: 0 }}
@@ -154,7 +196,6 @@ const UploadPage: React.FC = () => {
               }}
             />
 
-            {/* Modal */}
             <motion.div
               initial={{ x: "100%", opacity: 0 }}
               animate={{ x: "-50%", opacity: 1 }}
@@ -178,13 +219,11 @@ const UploadPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Flip container */}
               <div className="relative w-full h-[320px] perspective">
                 <motion.div
                   className="absolute inset-0 preserve-3d transition-transform duration-700"
                   animate={{ rotateY: flipped ? 180 : 0 }}
                 >
-                  {/* Sisi depan */}
                   <div className="absolute inset-0 backface-hidden flex items-center justify-center">
                     <img
                       src={preview}
@@ -193,7 +232,6 @@ const UploadPage: React.FC = () => {
                     />
                   </div>
 
-                  {/* Sisi belakang (QR Code) */}
                   <div className="absolute inset-0 backface-hidden rotateY-180 flex flex-col items-center justify-center">
                     <h3 className="mb-3 text-gray-700 font-semibold">
                       QR Code File
@@ -208,7 +246,6 @@ const UploadPage: React.FC = () => {
                 </motion.div>
               </div>
 
-              {/* Tombol balik */}
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={() => setFlipped((f) => !f)}
